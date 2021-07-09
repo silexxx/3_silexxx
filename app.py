@@ -41,28 +41,34 @@ def donation_camps():
 
 
 
-genre = st.radio("What's your favorite movie genre",('Comedy', 'Drama', 'Documentary'))
-if genre == 'Comedy':
-	st.write('You selected comedy.')
-else:
-	st.write("You didn't select comedy.")
-
 
 if login_checkbox:
 	if username=='1' and password=='1':
 		st.write('Logged In')
 
-		st.write('Please Select ')
+
+		operation = st.sidebar.radio("Please Select type of operation:",('Deposit', 'Request_Processing'))
+		if operation == 'Deposit':
+
+			st.write('You selected Deposit.')
+			doners = st.sidebar.radio("Please Select An section",('Individual_Entry', 'Hospital_Entry','Donation_Camps_Entry'))
+
+			if doners == 'Individual_Entry':
+				st.write('You selected Individual_Entry.')
+				individual()
+			elif doners == 'Individual_Entry':
+				st.write("You selected Hospital_Entry.")
+			elif doners == 'Donation_Camps_Entry':
+				st.write("You selected Donation_Camps_Entry.")
+				donation_camps()
+			
+		elif operation == 'Request_Processing':
+			st.write("You selected Request_Processing.")
 
 
-		individual_checkbox = st.sidebar.checkbox('Individual Data')
-		if individual_checkbox:
-			individual()
 
-		individual_checkbox = st.sidebar.checkbox('Individual Data')
-		if individual_checkbox:
-			individual()
 
+		
 
 
 
