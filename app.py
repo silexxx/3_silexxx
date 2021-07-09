@@ -10,14 +10,17 @@ login_checkbox = st.sidebar.checkbox('Login')
 
 
 def individual():
-	with st.form(key='my_form'):
+	with st.form(key='individual_form'):
 		st.write('Please Enter the Details')
 		name =st.text_input('Please Enter Name')
 		email=st.text_input('Please Enter Email')
 		city =st.text_input('Please Enter city')
 		zipcode=st.text_input('Please Enter zipcode')
-		blood_group = st.selectbox('Please Choose Blood Group?',('A+', 'A-', 'B+','B-','AB+','AB-','O+','O-'))
+		phone_no=st.number_input('Please Enter Phone Number')
+		phone_no=int(phone_no)
+		blood_group = st.selectbox('Please Choose Blood Group',('A+', 'A-', 'B+','B-','AB+','AB-','O+','O-'))
 		blood_quantity=st.number_input('Please Enter blood_quantity in ml')
+		blood_quantity=int(blood_quantity)
 		submit_button = st.form_submit_button(label='Submit')
 
 	if submit_button:
@@ -25,20 +28,41 @@ def individual():
 		return  name,email,city,zipcode,blood_group,blood_quantity
 
 def donation_camps():
-	with st.form(key='my_form'):
+	with st.form(key='donation_camps_form'):
 		st.write('Please Enter the Details')
-		name =st.text_input('Please Enter Name')
-		email=st.text_input('Please Enter Email')
+		name =st.text_input('Please Enter Name of Institute')
+		email=st.text_input('Please Enter Institute Email')
 		city =st.text_input('Please Enter city')
 		zipcode=st.text_input('Please Enter zipcode')
-		blood_group = st.selectbox('Please Choose Blood Group?',('A+', 'A-', 'B+','B-','AB+','AB-','O+','O-'))
+		phone_no=st.number_input('Please Enter Phone Number')
+		phone_no=int(phone_no)
+		blood_group = st.selectbox('Please Choose Blood Group',('A+', 'A-', 'B+','B-','AB+','AB-','O+','O-'))
 		blood_quantity=st.number_input('Please Enter blood_quantity in ml')
+		blood_quantity=int(blood_quantity)
 		submit_button = st.form_submit_button(label='Submit')
 
 	if submit_button:
 		st.write("records are saved")
 		return  name,email,city,zipcode,blood_group,blood_quantity
 
+
+def hospitals():
+	with st.form(key='hospitals_form'):
+		st.write('Please Enter the Details')
+		name =st.text_input('Please Enter Name of Hospital')
+		email=st.text_input('Please Enter Hospital Email')
+		city =st.text_input('Please Enter Hospital city')
+		zipcode=st.text_input('Please Enter Hospital city zipcode')
+		phone_no=st.number_input('Please Enter Hospital Phone Number')
+		phone_no=int(phone_no)
+		blood_group = st.selectbox('Please Choose Blood Group',('A+', 'A-', 'B+','B-','AB+','AB-','O+','O-'))
+		blood_quantity=st.number_input('Please Enter blood_quantity in ml')
+		blood_quantity=int(blood_quantity)
+		submit_button = st.form_submit_button(label='Submit')
+
+	if submit_button:
+		st.write("records are saved")
+		return  name,email,city,zipcode,blood_group,blood_quantity
 
 
 
@@ -56,8 +80,9 @@ if login_checkbox:
 			if doners == 'Individual_Entry':
 				st.write('You selected Individual_Entry.')
 				individual()
-			elif doners == 'Individual_Entry':
+			elif doners == 'Hospital_Entry':
 				st.write("You selected Hospital_Entry.")
+				hospitals()
 			elif doners == 'Donation_Camps_Entry':
 				st.write("You selected Donation_Camps_Entry.")
 				donation_camps()
