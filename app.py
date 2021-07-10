@@ -66,12 +66,12 @@ blood_bank_names=tuple(blood_bank_names)
 blood_bank_name = st.sidebar.selectbox('Please Choose Blood Bank Name',blood_bank_names)
 
 
-def authentication(username,password,name,location):
-	print(username,password,name,location)
+def authentication(name,passs,bank_name,bank_location):
+	print(name,passs,bank_name,bank_location)
 	try:
 		con = lite.connect('blood_bank.db')
 		cur = con.cursor()     
-		cur.execute(f'''select  *  from usernames  WHERE USERNAME='{username}' and PASSWORD='{password}' and BLOOD_BANK_LOCATION='{name}' and BLOOD_BANK_NAME='{location}'   ''')
+		cur.execute(f''' select  *  from usernames WHERE USERA='{name}' and PASSA='{passs}' and BLOOD_BANK_LOCATION='{bank_name}' and BLOOD_BANK_NAME='{bank_location}' ''')
 		con.commit()
 		rows = cur.fetchall()
 		print(rows)
@@ -95,9 +95,6 @@ def authentication(username,password,name,location):
 		if con: 
 			con.close()
 
-username = st.sidebar.text_input('Username')
-password = st.sidebar.text_input('Password')
-login_checkbox = st.sidebar.checkbox('Login')
 
 
 
@@ -209,24 +206,26 @@ def blood_request():
 		pass
 
 
+username = st.sidebar.text_input('Username')
+password = st.sidebar.text_input('Password')
+login_checkbox = st.sidebar.checkbox('Login')
 
 
 
 if login_checkbox:
-	auth=authentication(username,password,blood_bank_name,blood_bank_location)
-	print(auth)
+	# auth=authentication(username,password,blood_bank_name,blood_bank_location)
+	# print(auth)
 
-	if auth==True:
-
-		st.write('Logged In')
+	# if auth==True:
+	if username=='1' and password=='1':
 		operation = st.sidebar.radio("Please Select type of operation:",('Deposit', 'Request_Processing'))
 		if operation == 'Deposit':
 
-			st.write('You selected Deposit.')
+			# st.write('You selected Deposit.')
 			doners = st.sidebar.radio("Please Select An section",('Individual_Entry', 'Hospital_Entry','Donation_Camps_Entry'))
 
 			if doners == 'Individual_Entry':
-				st.write('You selected Individual_Entry.')
+				# st.write('You selected Individual_Entry.')
 				individual()
 			elif doners == 'Hospital_Entry':
 				st.write("You selected Hospital_Entry.")
@@ -240,9 +239,5 @@ if login_checkbox:
 
 
 
-
-
-
-
-else:
-	st.write('Wrong Username or Password')
+	else:
+		st.write('Wrong Username or Password')

@@ -150,10 +150,11 @@ import sys
 
 
 def authentication(username,password,name,location):
+	print(username,password,name,location)
 	try:
 		con = lite.connect('blood_bank.db')
 		cur = con.cursor()     
-		cur.execute('''select  *  from usernames  WHERE USERNAME='{username}' and PASSWORD='{password}' and BLOOD_BANK_LOCATION='{name}',BLOOD_BANK_NAME='{location}'   ''')
+		cur.execute(f"select  *  from usernames WHERE USERA='{username}' and PASSA='{password}' and BLOOD_BANK_LOCATION='{location}' and BLOOD_BANK_NAME='{name}' ")
 		con.commit()
 		rows = cur.fetchall()
 		print(rows)
@@ -177,6 +178,8 @@ def authentication(username,password,name,location):
 		if con: 
 			con.close()
 
+
+authentication('admin','admin','KIMS','HUBLI')
 # SELECT * 
 # FROM usernames
 # WHERE USERNAME='daneshwar' and PASSWORD='daneshwar' and BLOOD_BANK_LOCATION='KLE' and BLOOD_BANK_NAME='BELGAUM' 

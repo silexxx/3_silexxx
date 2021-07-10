@@ -5,7 +5,7 @@
 # try: 
 #     con = lite.connect('blood_bank.db') 
 #     cur = con.cursor()     
-#     cur.execute("CREATE TABLE usernames(NAME TEXT,EMAIL TEXT,CITY TEXT,ZIPCODE INTEGER,PHONENO INTEGER,USERNAME TEXT,PASSWORDS TEXT,BLOOD_BANK_LOCATION TEXT,BLOOD_BANK_NAME TEXT)")
+#     cur.execute("CREATE TABLE usernames(NAME TEXT,EMAIL TEXT,CITY TEXT,ZIPCODE INTEGER,PHONENO INTEGER,USERA TEXT,PASSA TEXT,BLOOD_BANK_LOCATION TEXT,BLOOD_BANK_NAME TEXT)")
 #     con.commit() 
              
 # except Exception as e: 
