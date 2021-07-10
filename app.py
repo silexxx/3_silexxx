@@ -39,6 +39,7 @@ def individual():
 		zipcode=st.text_input('Please Enter zipcode')
 		phone_no=st.number_input('Please Enter Phone Number')
 		phone_no=int(phone_no)
+		type_of_blood=st.selectbox('Please Choose type ',('BLOOD_REPLACEMENT', 'PLASMA_REPLACEMENT'))
 		blood_group = st.selectbox('Please Choose Blood Group',('A+', 'A-', 'B+','B-','AB+','AB-','O+','O-'))
 		blood_quantity=st.number_input('Please Enter blood_quantity in ml')
 		blood_quantity=int(blood_quantity)
@@ -60,6 +61,7 @@ def donation_camps():
 		zipcode=st.text_input('Please Enter zipcode')
 		phone_no=st.number_input('Please Enter Phone Number')
 		phone_no=int(phone_no)
+		type_of_blood=st.selectbox('Please Choose type ',('BLOOD_REPLACEMENT', 'PLASMA_REPLACEMENT'))
 		blood_group = st.selectbox('Please Choose Blood Group',('A+', 'A-', 'B+','B-','AB+','AB-','O+','O-'))
 		blood_quantity=st.number_input('Please Enter blood_quantity in ml')
 		blood_quantity=int(blood_quantity)
@@ -83,6 +85,7 @@ def hospitals():
 		zipcode=st.text_input('Please Enter Hospital city zipcode')
 		phone_no=st.number_input('Please Enter Hospital Phone Number')
 		phone_no=int(phone_no)
+		type_of_blood=st.selectbox('Please Choose type ',('BLOOD_REPLACEMENT', 'PLASMA_REPLACEMENT'))
 		blood_group = st.selectbox('Please Choose Blood Group',('A+', 'A-', 'B+','B-','AB+','AB-','O+','O-'))
 		blood_quantity=st.number_input('Please Enter blood_quantity in ml')
 		blood_quantity=int(blood_quantity)
@@ -97,26 +100,22 @@ def hospitals():
 
 
 def blood_request():
-	with st.form(key='hospitals_form'):
-		st.write('Please Enter the Details')
-		name =st.text_input('Please Enter Name of Hospital')
-		email=st.text_input('Please Enter Hospital Email')
-		city =st.text_input('Please Enter Hospital city')
-		zipcode=st.text_input('Please Enter Hospital city zipcode')
-		phone_no=st.number_input('Please Enter Hospital Phone Number')
-		phone_no=int(phone_no)
-		blood_group = st.selectbox('Please Choose Blood Group',('A+', 'A-', 'B+','B-','AB+','AB-','O+','O-'))
+	with st.form(key='blood_request_form'):
+		st.write("You selected Request_Processing.")
+		st.write("Available .")
+		requests_names_d={'Daneshwar G':['BLOOD_REPLACEMENT','A+',100,'587311'],'Sonali S':['PLASMA_REPLACEMENT','B+',100,'590008'],'Vinayak K':['PLASMA_REPLACEMENT','O-',200,'587311']}
+		requests_names = st.selectbox('Please Choose Blood Group',('Daneshwar G', 'Sonali S', 'Vinayak K'))
+		st.write('Blood type Needed',requests_names_d[f'{requests_names}'][0])
+		st.write('Blood Group Needed',requests_names_d[f'{requests_names}'][1])
+		st.write('Blood quantity Needed',requests_names_d[f'{requests_names}'][2])
+		st.write("Blood quantity Available is.",1000)
 		blood_quantity=st.number_input('Please Enter blood_quantity in ml')
 		blood_quantity=int(blood_quantity)
-		# ship_address=
 		submit_button = st.form_submit_button(label='Submit')
 
 	if submit_button:
-		global blood_bank_location,blood_bank_name
-		recordList=[(name,email,city,zipcode,phone_no,blood_group,blood_quantity,blood_bank_location,blood_bank_name)]
-		deposit_db(recordList)
-		st.write("Records are saved")
-		return  name,email,city,zipcode,phone_no,blood_group,blood_quantity,blood_bank_location,blood_bank_name
+		st.write("Request processed")
+		pass
 
 
 if login_checkbox:
@@ -145,12 +144,9 @@ if login_checkbox:
 				donation_camps()
 			
 		elif operation == 'Request_Processing':
-			st.write("You selected Request_Processing.")
+			blood_request()
 
 
-
-
-		
 
 
 
