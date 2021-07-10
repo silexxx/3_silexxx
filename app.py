@@ -9,6 +9,7 @@ login_checkbox = st.sidebar.checkbox('Login')
 
 
 
+
 def individual():
 	with st.form(key='individual_form'):
 		st.write('Please Enter the Details')
@@ -69,6 +70,10 @@ def hospitals():
 if login_checkbox:
 	if username=='1' and password=='1':
 		st.write('Logged In')
+
+		blood_bank_location = st.sidebar.selectbox('Please Choose Blood Bank location',('Belgaum','Hubli'))
+
+		blood_bank_name = st.sidebar.selectbox('Please Choose Blood Bank Name',('KLE','KIMS'))
 
 
 		operation = st.sidebar.radio("Please Select type of operation:",('Deposit', 'Request_Processing'))
