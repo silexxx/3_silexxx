@@ -11,8 +11,8 @@ def blood_request():
 		email=st.text_input('Please Enter Email')
 		city =st.text_input('Please Enter city')
 		zipcode=st.text_input('Please Enter zipcode')
-		phone_no=st.number_input('Please Enter Phone Number')
-		phone_no=int(phone_no)
+		phone_no=st.text_input('Please Enter Phone Number')
+		# phone_no=int(phone_no)
 		blood_group = st.selectbox('Please Choose Blood Group',('A+', 'A-', 'B+','B-','AB+','AB-','O+','O-'))
 		type_of_blood=st.selectbox('Please Choose type ',('BLOOD_REPLACEMENT', 'PLASMA_REPLACEMENT'))
 		blood_quantity=st.number_input('Please Enter blood_quantity in ml')
@@ -21,15 +21,20 @@ def blood_request():
 		submit_button = st.form_submit_button(label='Submit')
 
 	if submit_button:
-		global blood_bank_location,blood_bank_name
-		recordList=[(name,email,city,zipcode,phone_no,blood_group,blood_quantity,blood_bank_location,blood_bank_name)]
-		deposit_db(recordList)
-		st.write("Records are saved")
-		return  name,email,city,zipcode,phone_no,blood_group,blood_quantity,blood_bank_location,blood_bank_name
+		st.write("Request is submitted")
+		pass
+		# global blood_bank_location,blood_bank_name
+		# recordList=[(name,email,city,zipcode,phone_no,blood_group,blood_quantity,blood_bank_location,blood_bank_name)]
+		# deposit_db(recordList)
+		# st.write("Records are saved")
+		# return  name,email,city,zipcode,phone_no,blood_group,blood_quantity,blood_bank_location,blood_bank_name
 
 
 
 
-blood_bank_location = st.selectbox('Please Choose Blood Bank location',('Belgaum','Hubli'))
-blood_bank_name = st.selectbox('Please Choose Blood Bank Name',('KLE','KIMS'))
+blood_bank_location = st.selectbox('Please Choose Blood Bank location',('Belgaum','Hubli','BANGALORE'))
+print(blood_bank_location)
+blood_bank_name_dict={'Belgaum':('KLE','JNMC'),'Hubli':('KIMS','LAKEVIEW'),'BANGALORE':('LAKEVIEW','APOLLO')}
+print(blood_bank_name_dict[f'{blood_bank_location}'])
+blood_bank_name = st.selectbox('Please Choose Blood Bank Name',blood_bank_name_dict[f'{blood_bank_location}'])
 blood_request()
