@@ -9,18 +9,62 @@ password = st.sidebar.text_input('Password')
 login_checkbox = st.sidebar.checkbox('Login')
 
 
+def Add_New_Bank_db(recordList):
+	try:
+		con = lite.connect('blood_bank.db') 
+		cur = con.cursor()     
+		sqlite_insert_query='''INSERT INTO BloodBanks(BLOOD_BANK_NAME ,BLOOD_BANK_LOCATION ,ZIPCODE ) VALUES (?, ?, ?);'''
+		cur.executemany(sqlite_insert_query, recordList)
+		con.commit()
+
+	except Exception as e: 
+		if con: 
+			con.rollback() 
+
+		print("Unexpected error %s:" % e.args[0]) 
+		sys.exit(1) 
+	finally: 
+		if con: 
+			con.close()
+
+def Update_Excisting_Bank(recordList):
+	try:
+		con = lite.connect('blood_bank.db') 
+		cur = con.cursor()     
+		sqlite_insert_query='''INSERT INTO BloodBanks(BLOOD_BANK_NAME ,BLOOD_BANK_LOCATION ,ZIPCODE ) VALUES (?, ?, ?);'''
+		cur.executemany(sqlite_insert_query, recordList)
+		con.commit()
+
+	except Exception as e: 
+		if con: 
+			con.rollback() 
+
+		print("Unexpected error %s:" % e.args[0]) 
+		sys.exit(1) 
+	finally: 
+		if con: 
+			con.close()
+
+
+
+
+def blood_bank_location_list():
+	
+
 
 def Add_New_Bank():
 	with st.form(key='Add_New_Bank_form'):
 		st.write('Please Enter the Details')
-		name =st.text_input('Please Enter Name of the New Bank')
-		location=st.text_input('Please Enter Location of the New Bank')
+		name =st.text_input('Please Enter Name of the New Bank').upper()
+		location=st.text_input('Please Enter Location of the New Bank').upper()
 		zipcode=st.text_input('Please Enter the zipcode of New Bank location')
+		zipcode=int(zipcode)
 		submit_button = st.form_submit_button(label='Submit')
 
 	if submit_button:
+		recordList=[(name,location,zipcode)]
+		Add_New_Bank_db(recordList)
 		st.write("Records are saved")
-		pass
 
 
 def Update_Excisting_Bank():
