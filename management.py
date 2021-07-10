@@ -1,6 +1,11 @@
 import streamlit as st
 import sqlite3 as lite 
 import sys 
+from PIL import Image
+image = Image.open('logo.jpg')
+
+st.sidebar.title('-------------Ray-------------')
+st.sidebar.image(image, caption='')
 
 st.title('BLOOD BANK SYSTEM AND CREDENTIALS MANAGEMENT')
 username = st.sidebar.text_input('Username')

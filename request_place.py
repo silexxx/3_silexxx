@@ -3,6 +3,12 @@ import sqlite3 as lite
 import sys
 import datetime
 
+from PIL import Image
+image = Image.open('logo.jpg')
+
+st.sidebar.title('-------------Ray-------------')
+st.sidebar.image(image, caption='')
+
 st.title("Blood Request Portal")
 
 def blood_bank_location_list():

@@ -1,11 +1,13 @@
 import streamlit as st
 import sqlite3 as lite 
-import sys 
+import sys
+from PIL import Image
+image = Image.open('logo.jpg')
 
+st.sidebar.title('-------------Ray-------------')
+st.sidebar.image(image, caption='')
 
-
-st.title('APPNAME')
-
+st.title("Blood Bank Process Portal")
 
 def blood_bank_location_list():
 	blood_bank_location_list=[]
