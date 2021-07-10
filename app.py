@@ -96,7 +96,26 @@ def authentication(name,passs,bank_name,bank_location):
 			con.close()
 
 
+def blood_quantity_available(BLOOD_BANK_NAME,BLOOD_BANK_LOCATION):
+	try:
+		con = lite.connect('blood_bank.db')
+		cur = con.cursor()
+		cur.execute(f'''SELECT sum(BLOOD_QUANTITY) FROM depositions WHERE BLOOD_BANK_LOCATION='{BLOOD_BANK_LOCATION}' AND BLOOD_BANK_NAME='{BLOOD_BANK_NAME}' ''')
+		con.commit()
+		rows = cur.fetchall()
+		print(rows[0][0])
+		return rows[0][0]
 
+
+	except Exception as e: 
+		if con: 
+			con.rollback() 
+
+		print("Unexpected error %s:" % e.args[0]) 
+		sys.exit(1) 
+	finally: 
+		if con: 
+			con.close()
 
 def deposit_db(recordList):
 	try:
@@ -186,24 +205,97 @@ def hospitals():
 		st.write("Records are saved")
 		return  name,email,city,zipcode,phone_no,blood_group,blood_quantity,blood_bank_location,blood_bank_name
 
+def requests_names(blood_bank_namesr,blood_bank_locationsr):
+	requests_names_list=[]
+	try:
+		con = lite.connect('blood_bank.db')
+		cur = con.cursor()
+		cur.execute(f'''SELECT NAME FROM BloodRequests WHERE BLOOD_BANK_LOCATION='{blood_bank_locationsr}' AND BLOOD_BANK_NAME='{blood_bank_namesr}' order by EXPIRY_DATE ''')
+		con.commit()
+		rows = cur.fetchall()
+		print(rows)
+		for i in rows:
+			print(i[0])
+			requests_names_list.append(i[0])
+		return requests_names_list
+
+	except Exception as e: 
+		if con: 
+			con.rollback() 
+
+		print("Unexpected error %s:" % e.args[0]) 
+		sys.exit(1) 
+	finally: 
+		if con: 
+			con.close()
+
+def request_details(NAME,BLOOD_BANK_LOCATION,BLOOD_BANK_NAME):
+	requests_names_list=[]
+	try:
+		con = lite.connect('blood_bank.db')
+		cur = con.cursor()
+		cur.execute(f'''SELECT BLOOD_GROUP,BLOOD_TYPE,BLOOD_QUANTITY FROM BloodRequests WHERE NAME='{NAME}' AND BLOOD_BANK_LOCATION='{BLOOD_BANK_LOCATION}' AND BLOOD_BANK_NAME='{BLOOD_BANK_NAME}' AND EXPIRY_DATE < DATE(CURRENT_TIMESTAMP) order by EXPIRY_DATE; ''')
+		con.commit()
+		rows = cur.fetchall()
+		print(rows)
+		for i in rows:
+			return i[0],i[1],i[2]
+
+	except Exception as e: 
+		if con: 
+			con.rollback() 
+
+		print("Unexpected error %s:" % e.args[0]) 
+		sys.exit(1) 
+	finally: 
+		if con: 
+			con.close()
+
+
+def aggregation_fetch(QUANTITY):
+	try:
+		con = lite.connect('blood_bank.db')
+		cur = con.cursor()
+		cur.execute(f'''select ID,BLOOD_QUANTITY  FROM depositions WHERE BLOOD_QUANTITY >= {QUANTITY}  ORDER BY BLOOD_QUANTITY DESC LIMIT 1 ''')
+		con.commit()
+		rows = cur.fetchall()
+		print(rows[0])
+		return rows[0]
+
+
+	except Exception as e: 
+		if con: 
+			con.rollback() 
+
+		print("Unexpected error %s:" % e.args[0]) 
+		sys.exit(1) 
+	finally: 
+		if con: 
+			con.close()
 
 def blood_request():
+	global blood_bank_name,blood_bank_location
 	with st.form(key='blood_request_form'):
-		st.write("You selected Request_Processing.")
-		st.write("Available .")
-		requests_names_d={'Daneshwar G':['BLOOD_REPLACEMENT','A+',100,'587311'],'Sonali S':['PLASMA_REPLACEMENT','B+',100,'590008'],'Vinayak K':['PLASMA_REPLACEMENT','O-',200,'587311']}
-		requests_names = st.selectbox('Please Choose Blood Group',('Daneshwar G', 'Sonali S', 'Vinayak K'))
-		st.write('Blood type Needed',requests_names_d[f'{requests_names}'][0])
-		st.write('Blood Group Needed',requests_names_d[f'{requests_names}'][1])
-		st.write('Blood quantity Needed',requests_names_d[f'{requests_names}'][2])
-		st.write("Blood quantity Available is.",1000)
+		list_names=requests_names(blood_bank_name,blood_bank_location)
+		list_names=tuple(list_names)
+		print(list_names)
+		requests_namess = st.selectbox('Please Choose Blood Group',list_names)
+		blood_quantity=blood_quantity_available(blood_bank_name,blood_bank_location)
+		st.write("Blood quantity Available is.",blood_quantity)
+		Blood_type_requested,Blood_Group_requested,Blood_quantity_requested=request_details(requests_namess,blood_bank_location,blood_bank_name)
+		st.write('Blood type Needed',Blood_type_requested)
+		st.write('Blood Group Needed',Blood_Group_requested)
+		st.write('Blood quantity Needed',Blood_quantity_requested)
+		blood_quantity=blood_quantity_available(blood_bank_name,blood_bank_location)
 		blood_quantity=st.number_input('Please Enter blood_quantity in ml')
 		blood_quantity=int(blood_quantity)
+		fetched_ID,fetched_quantity=aggregation_fetch(blood_quantity)
+		print(fetched_ID,fetched_quantity)
 		submit_button = st.form_submit_button(label='Submit')
 
 	if submit_button:
 		st.write("Request processed")
-		pass
+		
 
 
 username = st.sidebar.text_input('Username')

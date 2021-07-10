@@ -5,6 +5,60 @@ import datetime
 
 st.title("Blood Request Portal")
 
+def blood_bank_location_list():
+	blood_bank_location_list=[]
+	try:
+		con = lite.connect('blood_bank.db')
+		cur = con.cursor()     
+		cur.execute('''select distinct BLOOD_BANK_LOCATION from BloodBanks ''')
+		con.commit()
+		rows = cur.fetchall()
+		print(rows)
+
+		for i in rows:
+			blood_bank_location_list.append(i[0])
+			print(i[0])
+		return blood_bank_location_list
+
+	except Exception as e: 
+		if con: 
+			con.rollback() 
+
+		print("Unexpected error %s:" % e.args[0]) 
+		sys.exit(1) 
+	finally: 
+		if con: 
+			con.close()
+
+def blood_bank_names_list(location):
+	print(location)
+	blood_bank_names_list=[]
+	try:
+		con = lite.connect('blood_bank.db')
+		cur = con.cursor()
+		cur.execute(f'''select distinct BLOOD_BANK_NAME from BloodBanks where BLOOD_BANK_LOCATION='{location}' ''')
+		con.commit()
+		rows = cur.fetchall()
+		print(rows)
+
+		for i in rows:
+			blood_bank_names_list.append(i[0])
+			print(i[0])
+		return blood_bank_names_list
+
+	except Exception as e: 
+		if con: 
+			con.rollback() 
+
+		print("Unexpected error %s:" % e.args[0]) 
+		sys.exit(1) 
+	finally: 
+		if con: 
+			con.close()
+
+
+
+
 
 def requestplace_db(recordList):
 	try:
@@ -48,12 +102,13 @@ def blood_request():
 		st.write("Request is submitted")
 
 
+blood_bank_locations=blood_bank_location_list()
+blood_bank_location_tuple=tuple(blood_bank_locations)
+blood_bank_location = st.selectbox('Please Choose Blood Bank location',blood_bank_location_tuple)
+blood_bank_names=blood_bank_names_list(blood_bank_location)
+blood_bank_names=tuple(blood_bank_names)
+blood_bank_name = st.selectbox('Please Choose Blood Bank Name',blood_bank_names)
 
 
 
-blood_bank_location = st.selectbox('Please Choose Blood Bank location',('Belgaum','Hubli','BANGALORE'))
-print(blood_bank_location)
-blood_bank_name_dict={'Belgaum':('KLE','JNMC'),'Hubli':('KIMS','LAKEVIEW'),'BANGALORE':('LAKEVIEW','APOLLO')}
-print(blood_bank_name_dict[f'{blood_bank_location}'])
-blood_bank_name = st.selectbox('Please Choose Blood Bank Name',blood_bank_name_dict[f'{blood_bank_location}'])
 blood_request()
