@@ -2,10 +2,9 @@ import streamlit as st
 import sqlite3 as lite 
 import sys 
 
-
+st.title('BLOOD BANK SYSTEM AND CREDENTIALS MANAGEMENT')
 username = st.sidebar.text_input('Username')
 password = st.sidebar.text_input('Password')
-
 login_checkbox = st.sidebar.checkbox('Login')
 
 
@@ -147,6 +146,25 @@ def Add_New_Bank():
 			Add_New_Bank_db(recordList)
 			st.write("Records are saved")
 
+
+def Assign_New_USER_db(recordList):
+	try:
+		con = lite.connect('blood_bank.db') 
+		cur = con.cursor()     
+		sqlite_insert_query='''INSERT INTO usernames(NAME,EMAIL,CITY ,ZIPCODE ,PHONENO ,USERNAME ,PASSWORD ,BLOOD_BANK_LOCATION ,BLOOD_BANK_NAME) VALUES (?, ?, ?,?,?,?,?,?,?);'''
+		cur.executemany(sqlite_insert_query, recordList)
+		con.commit()
+
+	except Exception as e: 
+		if con: 
+			con.rollback() 
+
+		print("Unexpected error %s:" % e.args[0]) 
+		sys.exit(1) 
+	finally: 
+		if con: 
+			con.close()
+
 def update_bank_record_db(name,location,new_name,new_location,new_zipcode):
 	try:
 		con = lite.connect('blood_bank.db')
@@ -183,7 +201,7 @@ def Update_Excisting_Bank():
 
 	if submit_button:
 		st.write("Records are saved")
-		update_bank_record_db(blood_bank_name,blood_bank_location,name,location,zipcode)
+		Assign_New_USER_db(blood_bank_name,blood_bank_location,name,location,zipcode)
 		
 
 def Assign_New_USER():
@@ -199,14 +217,17 @@ def Assign_New_USER():
 		submit_button = st.form_submit_button(label='Submit')
 
 	if submit_button:
+		global blood_bank_location,blood_bank_name
+		recordList=[(name,email,city,zipcode,phone_no,username,password,blood_bank_location,blood_bank_name)]
+		Assign_New_USER_db(recordList)
 		st.write("Records are saved")
-		pass
+		
 
 
 
 if login_checkbox:
 	if username=='1' and password=='1':
-		st.write('Logged In')
+		
 		operation = st.sidebar.radio("Please Select type of operation:",('Add_New_Bank', 'Update_Existing_Bank','Assign_New_USER'))
 		if operation == 'Add_New_Bank':
 			Add_New_Bank()
