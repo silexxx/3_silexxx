@@ -96,13 +96,15 @@ def authentication(name,passs,bank_name,bank_location):
 			con.close()
 
 
-def blood_quantity_available(BLOOD_BANK_NAME,BLOOD_BANK_LOCATION):
+def blood_quantity_available(BLOOD_BANK_NAMEe,BLOOD_BANK_LOCATIONe,Blood_Group_requested,Blood_type_requested):
+	print(BLOOD_BANK_NAMEe,BLOOD_BANK_LOCATIONe,Blood_Group_requested,Blood_type_requested)
 	try:
 		con = lite.connect('blood_bank.db')
 		cur = con.cursor()
-		cur.execute(f'''SELECT sum(BLOOD_QUANTITY) FROM depositions WHERE BLOOD_BANK_LOCATION='{BLOOD_BANK_LOCATION}' AND BLOOD_BANK_NAME='{BLOOD_BANK_NAME}' ''')
+		cur.execute(f'''SELECT sum(BLOOD_QUANTITY) FROM depositions WHERE BLOOD_BANK_LOCATION='{BLOOD_BANK_LOCATIONe}' AND BLOOD_BANK_NAME='{BLOOD_BANK_NAMEe}' AND BLOOD_TYPE='{Blood_type_requested}' AND BLOOD_GROUP='{Blood_Group_requested}' ''')
 		con.commit()
 		rows = cur.fetchall()
+		print(rows)
 		print(rows[0][0])
 		return rows[0][0]
 
@@ -121,7 +123,7 @@ def deposit_db(recordList):
 	try:
 		con = lite.connect('blood_bank.db') 
 		cur = con.cursor()     
-		sqlite_insert_query='''INSERT INTO depositions(NAME,EMAIL,CITY,ZIPCODE,PHONENO,BLOOD_GROUP,BLOOD_QUANTITY,BLOOD_BANK_LOCATION,BLOOD_BANK_NAME) VALUES (?, ?, ?, ?, ?,?,?,?,?);'''
+		sqlite_insert_query='''INSERT INTO depositions(NAME,EMAIL,CITY,ZIPCODE,PHONENO,BLOOD_TYPE,BLOOD_GROUP,BLOOD_QUANTITY,BLOOD_BANK_LOCATION,BLOOD_BANK_NAME) VALUES (?, ?, ?, ?, ?,?,?,?,?,?);'''
 		cur.executemany(sqlite_insert_query, recordList)
 		con.commit()
 
@@ -144,8 +146,7 @@ def individual():
 		email=st.text_input('Please Enter Email')
 		city =st.text_input('Please Enter city')
 		zipcode=st.text_input('Please Enter zipcode')
-		phone_no=st.number_input('Please Enter Phone Number')
-		phone_no=int(phone_no)
+		phone_no=st.text_input('Please Enter Phone Number')
 		type_of_blood=st.selectbox('Please Choose type ',('BLOOD_REPLACEMENT', 'PLASMA_REPLACEMENT'))
 		blood_group = st.selectbox('Please Choose Blood Group',('A+', 'A-', 'B+','B-','AB+','AB-','O+','O-'))
 		blood_quantity=st.number_input('Please Enter blood_quantity in ml')
@@ -154,10 +155,10 @@ def individual():
 
 	if submit_button:
 		global blood_bank_location,blood_bank_name
-		recordList=[(name,email,city,zipcode,phone_no,blood_group,blood_quantity,blood_bank_location,blood_bank_name)]
+		recordList=[(name,email,city,zipcode,phone_no,type_of_blood,blood_group,blood_quantity,blood_bank_location,blood_bank_name)]
 		deposit_db(recordList)
 		st.write("Records are saved")
-		return  name,email,city,zipcode,phone_no,blood_group,blood_quantity,blood_bank_location,blood_bank_name
+		return  name,email,city,zipcode,phone_no,type_of_blood,blood_group,blood_quantity,blood_bank_location,blood_bank_name
 
 def donation_camps():
 	with st.form(key='donation_camps_form'):
@@ -166,8 +167,7 @@ def donation_camps():
 		email=st.text_input('Please Enter Institute Email')
 		city =st.text_input('Please Enter city')
 		zipcode=st.text_input('Please Enter zipcode')
-		phone_no=st.number_input('Please Enter Phone Number')
-		phone_no=int(phone_no)
+		phone_no=st.text_input('Please Enter Phone Number')
 		type_of_blood=st.selectbox('Please Choose type ',('BLOOD_REPLACEMENT', 'PLASMA_REPLACEMENT'))
 		blood_group = st.selectbox('Please Choose Blood Group',('A+', 'A-', 'B+','B-','AB+','AB-','O+','O-'))
 		blood_quantity=st.number_input('Please Enter blood_quantity in ml')
@@ -176,10 +176,10 @@ def donation_camps():
 
 	if submit_button:
 		global blood_bank_location,blood_bank_name
-		recordList=[(name,email,city,zipcode,phone_no,blood_group,blood_quantity,blood_bank_location,blood_bank_name)]
+		recordList=[(name,email,city,zipcode,phone_no,type_of_blood,blood_group,blood_quantity,blood_bank_location,blood_bank_name)]
 		deposit_db(recordList)
 		st.write("Records are saved")
-		return  name,email,city,zipcode,phone_no,blood_group,blood_quantity,blood_bank_location,blood_bank_name
+		return  name,email,city,zipcode,phone_no,type_of_blood,blood_group,blood_quantity,blood_bank_location,blood_bank_name
 
 
 
@@ -190,8 +190,7 @@ def hospitals():
 		email=st.text_input('Please Enter Hospital Email')
 		city =st.text_input('Please Enter Hospital city')
 		zipcode=st.text_input('Please Enter Hospital city zipcode')
-		phone_no=st.number_input('Please Enter Hospital Phone Number')
-		phone_no=int(phone_no)
+		phone_no=st.text_input('Please Enter Phone Number')
 		type_of_blood=st.selectbox('Please Choose type ',('BLOOD_REPLACEMENT', 'PLASMA_REPLACEMENT'))
 		blood_group = st.selectbox('Please Choose Blood Group',('A+', 'A-', 'B+','B-','AB+','AB-','O+','O-'))
 		blood_quantity=st.number_input('Please Enter blood_quantity in ml')
@@ -200,10 +199,10 @@ def hospitals():
 
 	if submit_button:
 		global blood_bank_location,blood_bank_name
-		recordList=[(name,email,city,zipcode,phone_no,blood_group,blood_quantity,blood_bank_location,blood_bank_name)]
+		recordList=[(name,email,city,zipcode,phone_no,type_of_blood,blood_group,blood_quantity,blood_bank_location,blood_bank_name)]
 		deposit_db(recordList)
 		st.write("Records are saved")
-		return  name,email,city,zipcode,phone_no,blood_group,blood_quantity,blood_bank_location,blood_bank_name
+		return  name,email,city,zipcode,phone_no,blood_group,type_of_blood,blood_quantity,blood_bank_location,blood_bank_name
 
 def requests_names(blood_bank_namesr,blood_bank_locationsr):
 	requests_names_list=[]
@@ -252,11 +251,11 @@ def request_details(NAME,BLOOD_BANK_LOCATION,BLOOD_BANK_NAME):
 			con.close()
 
 
-def aggregation_fetch(QUANTITY):
+def aggregation_fetch(QUANTITY,BLOOD_BANK_LOCATION,BLOOD_BANK_NAME):
 	try:
 		con = lite.connect('blood_bank.db')
 		cur = con.cursor()
-		cur.execute(f'''select ID,BLOOD_QUANTITY  FROM depositions WHERE BLOOD_QUANTITY >= {QUANTITY}  ORDER BY BLOOD_QUANTITY DESC LIMIT 1 ''')
+		cur.execute(f'''select ID,BLOOD_QUANTITY  FROM depositions WHERE BLOOD_QUANTITY >= {QUANTITY} and BLOOD_BANK_LOCATION='{BLOOD_BANK_LOCATION}' AND BLOOD_BANK_NAME='{BLOOD_BANK_NAME}' ORDER BY BLOOD_QUANTITY DESC LIMIT 1 ''')
 		con.commit()
 		rows = cur.fetchall()
 		print(rows[0])
@@ -273,27 +272,76 @@ def aggregation_fetch(QUANTITY):
 		if con: 
 			con.close()
 
+def aggregation_update(ids,quantity):
+	try:
+		con = lite.connect('blood_bank.db')
+		cur = con.cursor()
+		cur.execute(f'''UPDATE depositions SET BLOOD_QUANTITY='{quantity}' where ID='{ids}' ''')
+		con.commit()
+		rows = cur.fetchall()
+		print(rows)
+
+
+	except Exception as e: 
+		if con: 
+			con.rollback() 
+
+		print("Unexpected error %s:" % e.args[0]) 
+		sys.exit(1) 
+	finally: 
+		if con: 
+			con.close()
+
+
+def delete_request(requests_namess,Blood_type_requested,Blood_Group_requested,blood_bank_location,blood_bank_name):
+	print(requests_namess,Blood_type_requested,Blood_Group_requested,blood_bank_location,blood_bank_name)
+	try:
+		con = lite.connect('blood_bank.db')
+		cur = con.cursor()
+		cur.execute(f''' DELETE FROM BloodRequests WHERE Name='{requests_namess}' AND BLOOD_TYPE='{Blood_type_requested}' AND BLOOD_GROUP='{Blood_Group_requested}' AND BLOOD_BANK_LOCATION='{blood_bank_location}' AND BLOOD_BANK_NAME='{blood_bank_name}'   ; ''')
+		con.commit()
+		rows = cur.fetchall()
+		print(rows)
+
+
+	except Exception as e: 
+		if con: 
+			con.rollback() 
+
+		print("Unexpected error %s:" % e.args[0]) 
+		sys.exit(1) 
+	finally: 
+		if con: 
+			con.close()
+
 def blood_request():
 	global blood_bank_name,blood_bank_location
-	with st.form(key='blood_request_form'):
-		list_names=requests_names(blood_bank_name,blood_bank_location)
-		list_names=tuple(list_names)
-		print(list_names)
-		requests_namess = st.selectbox('Please Choose Blood Group',list_names)
-		blood_quantity=blood_quantity_available(blood_bank_name,blood_bank_location)
-		st.write("Blood quantity Available is.",blood_quantity)
-		Blood_type_requested,Blood_Group_requested,Blood_quantity_requested=request_details(requests_namess,blood_bank_location,blood_bank_name)
-		st.write('Blood type Needed',Blood_type_requested)
-		st.write('Blood Group Needed',Blood_Group_requested)
-		st.write('Blood quantity Needed',Blood_quantity_requested)
-		blood_quantity=blood_quantity_available(blood_bank_name,blood_bank_location)
-		blood_quantity=st.number_input('Please Enter blood_quantity in ml')
-		blood_quantity=int(blood_quantity)
-		fetched_ID,fetched_quantity=aggregation_fetch(blood_quantity)
-		print(fetched_ID,fetched_quantity)
-		submit_button = st.form_submit_button(label='Submit')
+	# blood_quantity_plasma=blood_quantity_available(blood_bank_name,blood_bank_location,'BLOOD_REPLACEMENT')
+	# blood_quantity_replacement=blood_quantity_available(blood_bank_name,blood_bank_location,'BLOOD_REPLACEMENT')
+	# st.write("Blood plasma quantity Available is.",blood_quantity_plasma)
+	# st.write("Blood replacement quantity Available is.",blood_quantity_replacement)
+	
+	list_names=requests_names(blood_bank_name,blood_bank_location)
+	list_names=tuple(list_names)
+	print(list_names)
+	requests_namess = st.selectbox('Please Choose request to process',list_names)
+	Blood_Group_requested,Blood_type_requested,Blood_quantity_requested=request_details(requests_namess,blood_bank_location,blood_bank_name)
+	st.write('Blood type Needed',Blood_type_requested)
+	st.write('Blood Group Needed',Blood_Group_requested)
+	st.write('Blood quantity Needed',Blood_quantity_requested)
+	blood_quantity_av=blood_quantity_available(blood_bank_name,blood_bank_location,Blood_type_requested,Blood_Group_requested)
+	st.write("Blood quantity Available is.",blood_quantity_av)
+	blood_quantity=st.number_input('Please Enter blood_quantity in ml')
+	blood_quantity=int(blood_quantity)
+	submit_button = st.button(label='Submit')
 
 	if submit_button:
+		fetched_ID,fetched_quantity=aggregation_fetch(blood_quantity,blood_bank_location,blood_bank_name)
+		print(fetched_ID,fetched_quantity)
+		r_quantity=fetched_quantity-blood_quantity
+		print(r_quantity)
+		aggregation_update(fetched_ID,r_quantity)
+		delete_request(requests_namess,Blood_type_requested,Blood_Group_requested,blood_bank_location,blood_bank_name)
 		st.write("Request processed")
 		
 

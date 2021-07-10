@@ -210,29 +210,50 @@ import sys
 # print(update_bank_record_db('KLE','BELGAUM','KLES','BELGAUMS','590005'))
 
 
-def aggregation_fetch(QUANTITY):
-	print(QUANTITY)
-	try:
-		con = lite.connect('blood_bank.db')
-		cur = con.cursor()
-		cur.execute(f'''select ID,BLOOD_QUANTITY  FROM depositions WHERE BLOOD_QUANTITY >= {QUANTITY}  ORDER BY BLOOD_QUANTITY DESC LIMIT 1 ''')
-		con.commit()
-		rows = cur.fetchall()
-		print(rows[0])
-		return rows[0]
+# def aggregation_fetch(QUANTITY):
+# 	print(QUANTITY)
+# 	try:
+# 		con = lite.connect('blood_bank.db')
+# 		cur = con.cursor()
+# 		cur.execute(f'''select ID,BLOOD_QUANTITY  FROM depositions WHERE BLOOD_QUANTITY >= {QUANTITY}  ORDER BY BLOOD_QUANTITY DESC LIMIT 1 ''')
+# 		con.commit()
+# 		rows = cur.fetchall()
+# 		print(rows[0])
+# 		return rows[0]
 
 
-	except Exception as e: 
-		if con: 
-			con.rollback() 
+# 	except Exception as e: 
+# 		if con: 
+# 			con.rollback() 
 
-		print("Unexpected error %s:" % e.args[0]) 
-		sys.exit(1) 
-	finally: 
-		if con: 
-			con.close()
-print(aggregation_fetch(200))
+# 		print("Unexpected error %s:" % e.args[0]) 
+# 		sys.exit(1) 
+# 	finally: 
+# 		if con: 
+# 			con.close()
+# print(aggregation_fetch(200))
 
+# def aggregation_update(id,quantity):
+# 	try:
+# 		con = lite.connect('blood_bank.db')
+# 		cur = con.cursor()
+# 		cur.execute(f'''UPDATE depositions SET BLOOD_QUANTITY='{quantity}' where ID='{id}' ''')
+# 		con.commit()
+# 		rows = cur.fetchall()
+# 		print(rows)
+
+
+# 	except Exception as e: 
+# 		if con: 
+# 			con.rollback() 
+
+# 		print("Unexpected error %s:" % e.args[0]) 
+# 		sys.exit(1) 
+# 	finally: 
+# 		if con: 
+# 			con.close()
+
+# aggregation_update(4,1800)
 
 # def blood_quantity_available(BLOOD_BANK_NAME,BLOOD_BANK_LOCATION):
 # 	try:
@@ -316,3 +337,25 @@ print(aggregation_fetch(200))
 
 
 # SELECT BLOOD_GROUP,BLOOD_TYPE,BLOOD_QUANTITY FROM BloodRequests WHERE NAME='Daneshwar' AND BLOOD_BANK_LOCATION='BELGAUM' AND BLOOD_BANK_NAME='KLE' AND EXPIRY_DATE < DATE(CURRENT_TIMESTAMP) order by EXPIRY_DATE;
+
+
+def delete_request(name,BLOOD_TYPE,BLOOD_BANK_LOCATION,'BLOOD_BANK_NAME'):
+
+	try:
+		con = lite.connect('blood_bank.db')
+		cur = con.cursor()
+		cur.execute(f''' DELETE FROM BloodRequests WHERE Name='{name}' AND BLOOD_TYPE='{BLOOD_TYPE}' AND BLOOD_BANK_LOCATION='{BLOOD_BANK_LOCATION}' AND BLOOD_BANK_NAME='{BLOOD_BANK_NAME}'   ; ''')
+		con.commit()
+		rows = cur.fetchall()
+		print(rows)
+
+
+	except Exception as e: 
+		if con: 
+			con.rollback() 
+
+		print("Unexpected error %s:" % e.args[0]) 
+		sys.exit(1) 
+	finally: 
+		if con: 
+			con.close()
