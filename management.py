@@ -27,13 +27,43 @@ def Add_New_Bank_db(recordList):
 		if con: 
 			con.close()
 
-def Update_Excisting_Bank(recordList):
+# def Update_Excisting_Bank(recordList):
+# 	try:
+# 		con = lite.connect('blood_bank.db') 
+# 		cur = con.cursor()     
+# 		sqlite_insert_query='''INSERT INTO BloodBanks(BLOOD_BANK_NAME ,BLOOD_BANK_LOCATION ,ZIPCODE ) VALUES (?, ?, ?);'''
+# 		cur.executemany(sqlite_insert_query, recordList)
+# 		con.commit()
+
+# 	except Exception as e: 
+# 		if con: 
+# 			con.rollback() 
+
+# 		print("Unexpected error %s:" % e.args[0]) 
+# 		sys.exit(1) 
+# 	finally: 
+# 		if con: 
+# 			con.close()
+
+
+
+def check_if_exist(name,location):
 	try:
-		con = lite.connect('blood_bank.db') 
+		con = lite.connect('blood_bank.db')
 		cur = con.cursor()     
-		sqlite_insert_query='''INSERT INTO BloodBanks(BLOOD_BANK_NAME ,BLOOD_BANK_LOCATION ,ZIPCODE ) VALUES (?, ?, ?);'''
-		cur.executemany(sqlite_insert_query, recordList)
+		cur.execute(f'''select  *  from BloodBanks  WHERE BLOOD_BANK_NAME='{name}' and BLOOD_BANK_LOCATION='{location}'    ''')
 		con.commit()
+		rows = cur.fetchall()
+		print(rows)
+
+		if  len(rows) == 0:
+			return False
+		else:
+			return True
+
+		for row in rows:
+			print(row)
+		return row
 
 	except Exception as e: 
 		if con: 
@@ -47,9 +77,57 @@ def Update_Excisting_Bank(recordList):
 
 
 
-
 def blood_bank_location_list():
-	
+	blood_bank_location_list=[]
+	try:
+		con = lite.connect('blood_bank.db')
+		cur = con.cursor()     
+		cur.execute('''select distinct BLOOD_BANK_LOCATION from BloodBanks ''')
+		con.commit()
+		rows = cur.fetchall()
+		print(rows)
+
+		for i in rows:
+			blood_bank_location_list.append(i[0])
+			print(i[0])
+		return blood_bank_location_list
+
+	except Exception as e: 
+		if con: 
+			con.rollback() 
+
+		print("Unexpected error %s:" % e.args[0]) 
+		sys.exit(1) 
+	finally: 
+		if con: 
+			con.close()
+
+def blood_bank_names_list(location):
+	print(location)
+	blood_bank_names_list=[]
+	try:
+		con = lite.connect('blood_bank.db')
+		cur = con.cursor()
+		cur.execute(f'''select distinct BLOOD_BANK_NAME from BloodBanks where BLOOD_BANK_LOCATION='{location}' ''')
+		con.commit()
+		rows = cur.fetchall()
+		print(rows)
+
+		for i in rows:
+			blood_bank_names_list.append(i[0])
+			print(i[0])
+		return blood_bank_names_list
+
+	except Exception as e: 
+		if con: 
+			con.rollback() 
+
+		print("Unexpected error %s:" % e.args[0]) 
+		sys.exit(1) 
+	finally: 
+		if con: 
+			con.close()
+
 
 
 def Add_New_Bank():
@@ -58,21 +136,45 @@ def Add_New_Bank():
 		name =st.text_input('Please Enter Name of the New Bank').upper()
 		location=st.text_input('Please Enter Location of the New Bank').upper()
 		zipcode=st.text_input('Please Enter the zipcode of New Bank location')
-		zipcode=int(zipcode)
 		submit_button = st.form_submit_button(label='Submit')
 
 	if submit_button:
 		recordList=[(name,location,zipcode)]
-		Add_New_Bank_db(recordList)
-		st.write("Records are saved")
+		result=check_if_exist(name,location)
+		if result==True:
+			st.write("Record Alredy Exists")
+		else:
+			Add_New_Bank_db(recordList)
+			st.write("Records are saved")
+
+def update_bank_record_db(name,location,new_name,new_location,new_zipcode):
+	try:
+		con = lite.connect('blood_bank.db')
+		cur = con.cursor()
+		names='BELGAUM'
+		cur.execute('SELECT * FROM BloodBanks')
+		print(new_name)
+		cur.execute(f'''UPDATE BloodBanks SET BLOOD_BANK_NAME='{new_name}',BLOOD_BANK_LOCATION='{new_location}',ZIPCODE={new_zipcode} where BLOOD_BANK_LOCATION='{location}' and BLOOD_BANK_NAME='{name}' ''')
+		con.commit()
+		rows = cur.fetchall()
+		print(rows)
+
+
+	except Exception as e: 
+		if con: 
+			con.rollback() 
+
+		print("Unexpected error %s:" % e.args[0]) 
+		sys.exit(1) 
+	finally: 
+		if con: 
+			con.close()
 
 
 def Update_Excisting_Bank():
 	with st.form(key='Update_Excisting_Bank_form'):
-		blood_bank_location = st.selectbox('Please Choose Blood Bank location',('Belgaum','Hubli','BANGALORE'))
-		blood_bank_name_dict={'Belgaum':('KLE','JNMC'),'Hubli':('KIMS','LAKEVIEW'),'BANGALORE':('LAKEVIEW','APOLLO')}
-		print(blood_bank_name_dict[f'{blood_bank_location}'])
-		blood_bank_name = st.selectbox('Please Choose Blood Bank Name',blood_bank_name_dict[f'{blood_bank_location}'])
+		global blood_bank_location,blood_bank_name
+		
 		st.write('Please Enter the Details to Update')
 		name =st.text_input('Please Enter New Name of the  Bank')
 		location=st.text_input('Please Enter New Location of the Bank')
@@ -81,15 +183,12 @@ def Update_Excisting_Bank():
 
 	if submit_button:
 		st.write("Records are saved")
-		pass
+		update_bank_record_db(blood_bank_name,blood_bank_location,name,location,zipcode)
+		
 
 def Assign_New_USER():
 	with st.form(key='Assign_New_USER_form'):
 		st.write('Please Enter the Details')
-		blood_bank_location = st.selectbox('Please Choose Blood Bank location',('Belgaum','Hubli','BANGALORE'))
-		blood_bank_name_dict={'Belgaum':('KLE','JNMC'),'Hubli':('KIMS','LAKEVIEW'),'BANGALORE':('LAKEVIEW','APOLLO')}
-		print(blood_bank_name_dict[f'{blood_bank_location}'])
-		blood_bank_name = st.selectbox('Please Choose Blood Bank Name',blood_bank_name_dict[f'{blood_bank_location}'])
 		name =st.text_input('Please Enter Name')
 		email=st.text_input('Please Enter Email')
 		city =st.text_input('Please Enter city')
@@ -112,9 +211,23 @@ if login_checkbox:
 		if operation == 'Add_New_Bank':
 			Add_New_Bank()
 		elif operation == 'Update_Existing_Bank':
+			blood_bank_locations=blood_bank_location_list()
+			blood_bank_location_tuple=tuple(blood_bank_locations)
+			blood_bank_location = st.selectbox('Please Choose Blood Bank location',blood_bank_location_tuple)
+			blood_bank_names=blood_bank_names_list(blood_bank_location)
+			blood_bank_names=tuple(blood_bank_names)
+			print(blood_bank_names)
+			blood_bank_name = st.selectbox('Please Choose Blood Bank Name',blood_bank_names)
 			Update_Excisting_Bank()
 
 		elif operation == 'Assign_New_USER':
+			blood_bank_locations=blood_bank_location_list()
+			blood_bank_location_tuple=tuple(blood_bank_locations)
+			blood_bank_location = st.selectbox('Please Choose Blood Bank location',blood_bank_location_tuple)
+			blood_bank_names=blood_bank_names_list(blood_bank_location)
+			blood_bank_names=tuple(blood_bank_names)
+			print(blood_bank_names)
+			blood_bank_name = st.selectbox('Please Choose Blood Bank Name',blood_bank_names)
 			Assign_New_USER()
 			
 

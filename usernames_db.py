@@ -1,22 +1,22 @@
-# creating table BloodBanks
-# import sqlite3 as lite 
-# import sys 
+# creating table usernames
+import sqlite3 as lite 
+import sys 
  
-# try: 
-#     con = lite.connect('blood_bank.db') 
-#     cur = con.cursor()     
-#     cur.execute("CREATE TABLE BloodBanks(BLOOD_BANK_NAME TEXT,BLOOD_BANK_LOCATION TEXT,ZIPCODE INTEGER)")
-#     con.commit() 
+try: 
+    con = lite.connect('blood_bank.db') 
+    cur = con.cursor()     
+    cur.execute("CREATE TABLE usernames(BLOOD_BANK_NAME TEXT,BLOOD_BANK_LOCATION TEXT,ZIPCODE INTEGER)")
+    con.commit() 
              
-# except Exception as e: 
-#     if con: 
-#         con.rollback() 
+except Exception as e: 
+    if con: 
+        con.rollback() 
      
-#     print("Unexpected error %s:" % e.args[0]) 
-#     sys.exit(1) 
-# finally: 
-#     if con: 
-#         con.close()
+    print("Unexpected error %s:" % e.args[0]) 
+    sys.exit(1) 
+finally: 
+    if con: 
+        con.close()
 
 # drop table
 # import sqlite3 as lite 
