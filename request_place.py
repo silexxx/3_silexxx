@@ -1,6 +1,7 @@
 import streamlit as st
 import sqlite3 as lite 
 import sys
+import datetime
 
 
 def blood_request():
@@ -16,6 +17,7 @@ def blood_request():
 		type_of_blood=st.selectbox('Please Choose type ',('BLOOD_REPLACEMENT', 'PLASMA_REPLACEMENT'))
 		blood_quantity=st.number_input('Please Enter blood_quantity in ml')
 		blood_quantity=int(blood_quantity)
+		expiry_date=st.date_input("Till When do you want this request to be fulfilled",datetime.date(2020, 7, 10))
 		submit_button = st.form_submit_button(label='Submit')
 
 	if submit_button:
