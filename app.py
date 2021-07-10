@@ -96,7 +96,7 @@ def hospitals():
 		return  name,email,city,zipcode,phone_no,blood_group,blood_quantity,blood_bank_location,blood_bank_name
 
 
-def blood_request()
+def blood_request():
 	with st.form(key='hospitals_form'):
 		st.write('Please Enter the Details')
 		name =st.text_input('Please Enter Name of Hospital')
@@ -108,7 +108,7 @@ def blood_request()
 		blood_group = st.selectbox('Please Choose Blood Group',('A+', 'A-', 'B+','B-','AB+','AB-','O+','O-'))
 		blood_quantity=st.number_input('Please Enter blood_quantity in ml')
 		blood_quantity=int(blood_quantity)
-		ship_address=
+		# ship_address=
 		submit_button = st.form_submit_button(label='Submit')
 
 	if submit_button:
