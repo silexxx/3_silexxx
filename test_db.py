@@ -82,25 +82,47 @@
 #         con.close()
 
 
-import sqlite3 as lite 
-import sys 
+# import sqlite3 as lite 
+# import sys 
  
-try:
-    con = lite.connect('blood_bank.db') 
-    cur = con.cursor()     
-    cur.execute('''select * from depositions''')
-    con.commit()
-    rows = cur.fetchall()
+# try:
+#     con = lite.connect('blood_bank.db') 
+#     cur = con.cursor()     
+#     cur.execute('''select * from depositions''')
+#     con.commit()
+#     rows = cur.fetchall()
 
-    for row in rows:
-        print(row)
+#     for row in rows:
+#         print(row)
              
-except Exception as e: 
-    if con: 
-        con.rollback() 
+# except Exception as e: 
+#     if con: 
+#         con.rollback() 
      
-    print("Unexpected error %s:" % e.args[0]) 
-    sys.exit(1) 
-finally: 
-    if con: 
-        con.close()
+#     print("Unexpected error %s:" % e.args[0]) 
+#     sys.exit(1) 
+# finally: 
+#     if con: 
+#         con.close()
+
+
+
+# creating table requests
+# import sqlite3 as lite 
+# import sys 
+ 
+# try: 
+#     con = lite.connect('blood_bank.db') 
+#     cur = con.cursor()     
+#     cur.execute("CREATE TABLE BloodRequests(ID INTEGER PRIMARY KEY AUTOINCREMENT,NAME TEXT,EMAIL TEXT,CITY TEXT,ZIPCODE INTEGER,PHONENO INTEGER,BLOOD_GROUP TEXT,BLOOD_QUANTITY INTEGER,BLOOD_BANK_LOCATION TEXT,BLOOD_BANK_NAME TEXT,SHIP_ADDRESS TEXT)")
+#     con.commit() 
+             
+# except e: 
+#     if con: 
+#         con.rollback() 
+     
+#     print("Unexpected error %s:" % e.args[0]) 
+#     sys.exit(1) 
+# finally: 
+#     if con: 
+#         con.close()

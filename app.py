@@ -14,7 +14,7 @@ def deposit_db(recordList):
 	try:
 		con = lite.connect('blood_bank.db') 
 		cur = con.cursor()     
-		sqlite_insert_query='''INSERT INTO depositions(NAME,EMAIL,CITY,ZIPCODE,PHONENO,BLOOD_GROUP,BLOOD_QUANTITY,BLOOD_BANK_LOCATION,BLOOD_BANK_NAME) VALUES (?, ?, ?, ?, ?,?,?,?.?);'''
+		sqlite_insert_query='''INSERT INTO depositions(NAME,EMAIL,CITY,ZIPCODE,PHONENO,BLOOD_GROUP,BLOOD_QUANTITY,BLOOD_BANK_LOCATION,BLOOD_BANK_NAME) VALUES (?, ?, ?, ?, ?,?,?,?,?);'''
 		cur.executemany(sqlite_insert_query, recordList)
 		con.commit()
 
@@ -27,8 +27,6 @@ def deposit_db(recordList):
 	finally: 
 		if con: 
 			con.close()
-
-
 
 
 
@@ -75,6 +73,7 @@ def donation_camps():
 		return  name,email,city,zipcode,phone_no,blood_group,blood_quantity,blood_bank_location,blood_bank_name
 
 
+
 def hospitals():
 	with st.form(key='hospitals_form'):
 		st.write('Please Enter the Details')
@@ -96,6 +95,28 @@ def hospitals():
 		st.write("Records are saved")
 		return  name,email,city,zipcode,phone_no,blood_group,blood_quantity,blood_bank_location,blood_bank_name
 
+
+def blood_request()
+	with st.form(key='hospitals_form'):
+		st.write('Please Enter the Details')
+		name =st.text_input('Please Enter Name of Hospital')
+		email=st.text_input('Please Enter Hospital Email')
+		city =st.text_input('Please Enter Hospital city')
+		zipcode=st.text_input('Please Enter Hospital city zipcode')
+		phone_no=st.number_input('Please Enter Hospital Phone Number')
+		phone_no=int(phone_no)
+		blood_group = st.selectbox('Please Choose Blood Group',('A+', 'A-', 'B+','B-','AB+','AB-','O+','O-'))
+		blood_quantity=st.number_input('Please Enter blood_quantity in ml')
+		blood_quantity=int(blood_quantity)
+		ship_address=
+		submit_button = st.form_submit_button(label='Submit')
+
+	if submit_button:
+		global blood_bank_location,blood_bank_name
+		recordList=[(name,email,city,zipcode,phone_no,blood_group,blood_quantity,blood_bank_location,blood_bank_name)]
+		deposit_db(recordList)
+		st.write("Records are saved")
+		return  name,email,city,zipcode,phone_no,blood_group,blood_quantity,blood_bank_location,blood_bank_name
 
 
 if login_checkbox:
