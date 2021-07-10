@@ -10,30 +10,24 @@ login_checkbox = st.sidebar.checkbox('Login')
 
 
 
-def deposit_db(name,email,city,zipcode,blood_group,blood_quantity,blood_bank_location,blood_bank_name):
-	# try:
-	# 	con = lite.connect('blood_bank.db') 
-	# 	cur = con.cursor()     
-	# 	cur.execute(f'''INSERT INTO depositions(NAME,EMAIL,CITY,ZIPCODE,BLOOD_GROUP,BLOOD_QUANTITY,BLOOD_BANK_LOCATION,BLOOD_BANK_NAME) VALUES (f'{name}', f'{email}', f'{city}', f'{zipcode}', f'{blood_group}',f'{blood_quantity}',f'{blood_bank_location}',f'{blood_bank_name}')''')
-	# 	con.commit()
+def deposit_db(recordList):
+	try:
+		con = lite.connect('blood_bank.db') 
+		cur = con.cursor()     
+		sqlite_insert_query='''INSERT INTO depositions(NAME,EMAIL,CITY,ZIPCODE,PHONENO,BLOOD_GROUP,BLOOD_QUANTITY,BLOOD_BANK_LOCATION,BLOOD_BANK_NAME) VALUES (?, ?, ?, ?, ?,?,?,?.?);'''
+		cur.executemany(sqlite_insert_query, recordList)
+		con.commit()
 
-	# except Exception as e: 
-	# 	if con: 
-	# 		con.rollback() 
+	except Exception as e: 
+		if con: 
+			con.rollback() 
 
-	# 	print("Unexpected error %s:" % e.args[0]) 
-	# 	sys.exit(1) 
-	# finally: 
-	# 	if con: 
-	# 		con.close()
+		print("Unexpected error %s:" % e.args[0]) 
+		sys.exit(1) 
+	finally: 
+		if con: 
+			con.close()
 
-	
-	con = lite.connect('blood_bank.db') 
-	cur = con.cursor()     
-	cur.execute(f'''INSERT INTO depositions(NAME,EMAIL,CITY,ZIPCODE,BLOOD_GROUP,BLOOD_QUANTITY,BLOOD_BANK_LOCATION,BLOOD_BANK_NAME) VALUES (f'{name}', f'{email}', f'{city}', f'{zipcode}', f'{blood_group}',f'{blood_quantity}',f'{blood_bank_location}',f'{blood_bank_name}')''')
-	con.commit()
-
-	
 
 
 
@@ -54,10 +48,10 @@ def individual():
 
 	if submit_button:
 		global blood_bank_location,blood_bank_name
-		temp=deposit_db(name,email,city,zipcode,blood_group,blood_quantity,blood_bank_location,blood_bank_name)
-		print(temp)
-		st.write("records are saved")
-		return  name,email,city,zipcode,blood_group,blood_quantity
+		recordList=[(name,email,city,zipcode,phone_no,blood_group,blood_quantity,blood_bank_location,blood_bank_name)]
+		deposit_db(recordList)
+		st.write("Records are saved")
+		return  name,email,city,zipcode,phone_no,blood_group,blood_quantity,blood_bank_location,blood_bank_name
 
 def donation_camps():
 	with st.form(key='donation_camps_form'):
@@ -74,8 +68,11 @@ def donation_camps():
 		submit_button = st.form_submit_button(label='Submit')
 
 	if submit_button:
-		st.write("records are saved")
-		return  name,email,city,zipcode,blood_group,blood_quantity
+		global blood_bank_location,blood_bank_name
+		recordList=[(name,email,city,zipcode,phone_no,blood_group,blood_quantity,blood_bank_location,blood_bank_name)]
+		deposit_db(recordList)
+		st.write("Records are saved")
+		return  name,email,city,zipcode,phone_no,blood_group,blood_quantity,blood_bank_location,blood_bank_name
 
 
 def hospitals():
@@ -93,8 +90,11 @@ def hospitals():
 		submit_button = st.form_submit_button(label='Submit')
 
 	if submit_button:
-		st.write("records are saved")
-		return  name,email,city,zipcode,blood_group,blood_quantity
+		global blood_bank_location,blood_bank_name
+		recordList=[(name,email,city,zipcode,phone_no,blood_group,blood_quantity,blood_bank_location,blood_bank_name)]
+		deposit_db(recordList)
+		st.write("Records are saved")
+		return  name,email,city,zipcode,phone_no,blood_group,blood_quantity,blood_bank_location,blood_bank_name
 
 
 
