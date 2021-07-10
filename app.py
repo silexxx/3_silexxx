@@ -3,9 +3,100 @@ import sqlite3 as lite
 import sys 
 
 
+
+st.title('APPNAME')
+
+
+def blood_bank_location_list():
+	blood_bank_location_list=[]
+	try:
+		con = lite.connect('blood_bank.db')
+		cur = con.cursor()     
+		cur.execute('''select distinct BLOOD_BANK_LOCATION from BloodBanks ''')
+		con.commit()
+		rows = cur.fetchall()
+		print(rows)
+
+		for i in rows:
+			blood_bank_location_list.append(i[0])
+			print(i[0])
+		return blood_bank_location_list
+
+	except Exception as e: 
+		if con: 
+			con.rollback() 
+
+		print("Unexpected error %s:" % e.args[0]) 
+		sys.exit(1) 
+	finally: 
+		if con: 
+			con.close()
+
+def blood_bank_names_list(location):
+	print(location)
+	blood_bank_names_list=[]
+	try:
+		con = lite.connect('blood_bank.db')
+		cur = con.cursor()
+		cur.execute(f'''select distinct BLOOD_BANK_NAME from BloodBanks where BLOOD_BANK_LOCATION='{location}' ''')
+		con.commit()
+		rows = cur.fetchall()
+		print(rows)
+
+		for i in rows:
+			blood_bank_names_list.append(i[0])
+			print(i[0])
+		return blood_bank_names_list
+
+	except Exception as e: 
+		if con: 
+			con.rollback() 
+
+		print("Unexpected error %s:" % e.args[0]) 
+		sys.exit(1) 
+	finally: 
+		if con: 
+			con.close()
+
+blood_bank_locations=blood_bank_location_list()
+blood_bank_location_tuple=tuple(blood_bank_locations)
+blood_bank_location = st.sidebar.selectbox('Please Choose Blood Bank location',blood_bank_location_tuple)
+blood_bank_names=blood_bank_names_list(blood_bank_location)
+blood_bank_names=tuple(blood_bank_names)
+blood_bank_name = st.sidebar.selectbox('Please Choose Blood Bank Name',blood_bank_names)
+
+
+def authentication(username,password,name,location):
+	print(username,password,name,location)
+	try:
+		con = lite.connect('blood_bank.db')
+		cur = con.cursor()     
+		cur.execute(f'''select  *  from usernames  WHERE USERNAME='{username}' and PASSWORD='{password}' and BLOOD_BANK_LOCATION='{name}' and BLOOD_BANK_NAME='{location}'   ''')
+		con.commit()
+		rows = cur.fetchall()
+		print(rows)
+
+		if  len(rows) == 0:
+			return False
+		else:
+			return True
+
+		for row in rows:
+			print(row)
+		return row
+
+	except Exception as e: 
+		if con: 
+			con.rollback() 
+
+		print("Unexpected error %s:" % e.args[0]) 
+		sys.exit(1) 
+	finally: 
+		if con: 
+			con.close()
+
 username = st.sidebar.text_input('Username')
 password = st.sidebar.text_input('Password')
-
 login_checkbox = st.sidebar.checkbox('Login')
 
 
@@ -118,15 +209,16 @@ def blood_request():
 		pass
 
 
+
+
+
 if login_checkbox:
-	if username=='1' and password=='1':
+	auth=authentication(username,password,blood_bank_name,blood_bank_location)
+	print(auth)
+
+	if auth==True:
+
 		st.write('Logged In')
-
-		blood_bank_location = st.sidebar.selectbox('Please Choose Blood Bank location',('Belgaum','Hubli'))
-
-		blood_bank_name = st.sidebar.selectbox('Please Choose Blood Bank Name',('KLE','KIMS'))
-
-
 		operation = st.sidebar.radio("Please Select type of operation:",('Deposit', 'Request_Processing'))
 		if operation == 'Deposit':
 

@@ -124,18 +124,48 @@ import sys
 
 
 
-def update_bank_record_db(name,location,new_name,new_location,new_zipcode):
+# def update_bank_record_db(name,location,new_name,new_location,new_zipcode):
+# 	try:
+# 		con = lite.connect('blood_bank.db')
+# 		cur = con.cursor()
+# 		names='BELGAUM'
+# 		cur.execute('SELECT * FROM BloodBanks')
+# 		print(new_name)
+# 		cur.execute(f'''UPDATE BloodBanks SET BLOOD_BANK_NAME='{new_name}',BLOOD_BANK_LOCATION='{new_location}',ZIPCODE={new_zipcode} where BLOOD_BANK_LOCATION='{location}' and BLOOD_BANK_NAME='{name}' ''')
+# 		con.commit()
+# 		rows = cur.fetchall()
+# 		print(rows)
+
+
+# 	except Exception as e: 
+# 		if con: 
+# 			con.rollback() 
+
+# 		print("Unexpected error %s:" % e.args[0]) 
+# 		sys.exit(1) 
+# 	finally: 
+# 		if con: 
+# 			con.close()
+# print(update_bank_record_db('KLE','BELGAUM','KLES','BELGAUMS','590005'))
+
+
+def authentication(username,password,name,location):
 	try:
 		con = lite.connect('blood_bank.db')
-		cur = con.cursor()
-		names='BELGAUM'
-		cur.execute('SELECT * FROM BloodBanks')
-		print(new_name)
-		cur.execute(f'''UPDATE BloodBanks SET BLOOD_BANK_NAME='{new_name}',BLOOD_BANK_LOCATION='{new_location}',ZIPCODE={new_zipcode} where BLOOD_BANK_LOCATION='{location}' and BLOOD_BANK_NAME='{name}' ''')
+		cur = con.cursor()     
+		cur.execute('''select  *  from usernames  WHERE USERNAME='{username}' and PASSWORD='{password}' and BLOOD_BANK_LOCATION='{name}',BLOOD_BANK_NAME='{location}'   ''')
 		con.commit()
 		rows = cur.fetchall()
 		print(rows)
 
+		if  len(rows) == 0:
+			return False
+		else:
+			return True
+
+		for row in rows:
+			print(row)
+		return row
 
 	except Exception as e: 
 		if con: 
@@ -146,4 +176,7 @@ def update_bank_record_db(name,location,new_name,new_location,new_zipcode):
 	finally: 
 		if con: 
 			con.close()
-print(update_bank_record_db('KLE','BELGAUM','KLES','BELGAUMS','590005'))
+
+# SELECT * 
+# FROM usernames
+# WHERE USERNAME='daneshwar' and PASSWORD='daneshwar' and BLOOD_BANK_LOCATION='KLE' and BLOOD_BANK_NAME='BELGAUM' 

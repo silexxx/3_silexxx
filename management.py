@@ -151,7 +151,7 @@ def Assign_New_USER_db(recordList):
 	try:
 		con = lite.connect('blood_bank.db') 
 		cur = con.cursor()     
-		sqlite_insert_query='''INSERT INTO usernames(NAME,EMAIL,CITY ,ZIPCODE ,PHONENO ,USERNAME ,PASSWORD ,BLOOD_BANK_LOCATION ,BLOOD_BANK_NAME) VALUES (?, ?, ?,?,?,?,?,?,?);'''
+		sqlite_insert_query='''INSERT INTO usernames(NAME,EMAIL,CITY ,ZIPCODE ,PHONENO ,USERNAME ,PASSWORDS ,BLOOD_BANK_LOCATION ,BLOOD_BANK_NAME) VALUES (?, ?, ?,?,?,?,?,?,?);'''
 		cur.executemany(sqlite_insert_query, recordList)
 		con.commit()
 
