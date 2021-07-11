@@ -7,7 +7,7 @@ image = Image.open('logo.jpg')
 st.sidebar.title('-------------Ray-------------')
 st.sidebar.image(image, caption='')
 
-st.title("Blood Bank Process Portal")
+st.title("Blood Bank Deposit and Process Portal")
 
 def blood_bank_location_list():
 	blood_bank_location_list=[]
@@ -35,7 +35,7 @@ def blood_bank_location_list():
 			con.close()
 
 def blood_bank_names_list(location):
-	print(location)
+	# print(location)
 	blood_bank_names_list=[]
 	try:
 		con = lite.connect('blood_bank.db')
@@ -43,11 +43,11 @@ def blood_bank_names_list(location):
 		cur.execute(f'''select distinct BLOOD_BANK_NAME from BloodBanks where BLOOD_BANK_LOCATION='{location}' ''')
 		con.commit()
 		rows = cur.fetchall()
-		print(rows)
+		# print(rows)
 
 		for i in rows:
 			blood_bank_names_list.append(i[0])
-			print(i[0])
+			# print(i[0])
 		return blood_bank_names_list
 
 	except Exception as e: 
@@ -69,14 +69,14 @@ blood_bank_name = st.sidebar.selectbox('Please Choose Blood Bank Name',blood_ban
 
 
 def authentication(name,passs,bank_name,bank_location):
-	print(name,passs,bank_name,bank_location)
+	# print(name,passs,bank_name,bank_location)
 	try:
 		con = lite.connect('blood_bank.db')
 		cur = con.cursor()     
 		cur.execute(f''' select  *  from usernames WHERE USERA='{name}' and PASSA='{passs}' and BLOOD_BANK_LOCATION='{bank_name}' and BLOOD_BANK_NAME='{bank_location}' ''')
 		con.commit()
 		rows = cur.fetchall()
-		print(rows)
+		# print(rows)
 
 		if  len(rows) == 0:
 			return False
@@ -84,7 +84,8 @@ def authentication(name,passs,bank_name,bank_location):
 			return True
 
 		for row in rows:
-			print(row)
+			pass
+			# print(row)
 		return row
 
 	except Exception as e: 
@@ -98,7 +99,7 @@ def authentication(name,passs,bank_name,bank_location):
 			con.close()
 
 
-def blood_quantity_available(BLOOD_BANK_NAMEe,BLOOD_BANK_LOCATIONe,Blood_Group_requested,Blood_type_requested):
+def blood_quantity_available(BLOOD_BANK_NAMEe,BLOOD_BANK_LOCATIONe,Blood_type_requested,Blood_Group_requested):
 	print(BLOOD_BANK_NAMEe,BLOOD_BANK_LOCATIONe,Blood_Group_requested,Blood_type_requested)
 	try:
 		con = lite.connect('blood_bank.db')
@@ -359,7 +360,7 @@ if login_checkbox:
 	# print(auth)
 
 	# if auth==True:
-	if username=='1' and password=='1':
+	if username=='admin' and password=='admin@123':
 		operation = st.sidebar.radio("Please Select type of operation:",('Deposit', 'Request_Processing'))
 		if operation == 'Deposit':
 
