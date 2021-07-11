@@ -7,7 +7,7 @@ image = Image.open('logo.jpg')
 st.sidebar.title('-------------Ray-------------')
 st.sidebar.image(image, caption='')
 
-st.title('BLOOD BANK SYSTEM AND CREDENTIALS MANAGEMENT')
+st.title('BLOOD BANK SYSTEM AND CREDENTIALS MANAGEMENT PORTAL')
 username = st.sidebar.text_input('Username')
 password = st.sidebar.text_input('Password')
 login_checkbox = st.sidebar.checkbox('Login')
@@ -31,23 +31,6 @@ def Add_New_Bank_db(recordList):
 		if con: 
 			con.close()
 
-# def Update_Excisting_Bank(recordList):
-# 	try:
-# 		con = lite.connect('blood_bank.db') 
-# 		cur = con.cursor()     
-# 		sqlite_insert_query='''INSERT INTO BloodBanks(BLOOD_BANK_NAME ,BLOOD_BANK_LOCATION ,ZIPCODE ) VALUES (?, ?, ?);'''
-# 		cur.executemany(sqlite_insert_query, recordList)
-# 		con.commit()
-
-# 	except Exception as e: 
-# 		if con: 
-# 			con.rollback() 
-
-# 		print("Unexpected error %s:" % e.args[0]) 
-# 		sys.exit(1) 
-# 	finally: 
-# 		if con: 
-# 			con.close()
 
 
 
@@ -174,9 +157,6 @@ def update_bank_record_db(name,location,new_name,new_location,new_zipcode):
 	try:
 		con = lite.connect('blood_bank.db')
 		cur = con.cursor()
-		names='BELGAUM'
-		cur.execute('SELECT * FROM BloodBanks')
-		print(new_name)
 		cur.execute(f'''UPDATE BloodBanks SET BLOOD_BANK_NAME='{new_name}',BLOOD_BANK_LOCATION='{new_location}',ZIPCODE={new_zipcode} where BLOOD_BANK_LOCATION='{location}' and BLOOD_BANK_NAME='{name}' ''')
 		con.commit()
 		rows = cur.fetchall()
@@ -199,14 +179,15 @@ def Update_Excisting_Bank():
 		global blood_bank_location,blood_bank_name
 		
 		st.write('Please Enter the Details to Update')
-		name =st.text_input('Please Enter New Name of the  Bank')
-		location=st.text_input('Please Enter New Location of the Bank')
-		zipcode=st.text_input('Please Enter the New Bank location zipcode')
+		new_name =st.text_input('Please Enter New Name of the  Bank')
+		new_location=st.text_input('Please Enter New Location of the Bank')
+		new_zipcode=st.text_input('Please Enter the New Bank location zipcode')
 		submit_button = st.form_submit_button(label='Submit')
 
 	if submit_button:
+		update_bank_record_db(blood_bank_name,blood_bank_location,new_name,new_location,new_zipcode)
 		st.write("Records are saved")
-		Assign_New_USER_db(blood_bank_name,blood_bank_location,name,location,zipcode)
+		
 		
 
 def Assign_New_USER():
